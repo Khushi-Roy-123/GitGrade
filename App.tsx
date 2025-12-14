@@ -14,6 +14,7 @@ const App: React.FC = () => {
   
   // Settings State
   const [apiEndpoint, setApiEndpoint] = useState(DEFAULT_API_ENDPOINT);
+  const [apiKey, setApiKey] = useState('');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
@@ -21,11 +22,17 @@ const App: React.FC = () => {
     if (savedUrl) {
       setApiEndpoint(savedUrl);
     }
+    const savedKey = localStorage.getItem('gitanalyze_api_key');
+    if (savedKey) {
+      setApiKey(savedKey);
+    }
   }, []);
 
-  const handleSaveSettings = (url: string) => {
+  const handleSaveSettings = (url: string, key: string) => {
     setApiEndpoint(url);
+    setApiKey(key);
     localStorage.setItem('gitanalyze_api_endpoint', url);
+    localStorage.setItem('gitanalyze_api_key', key);
   };
 
   const handleAnalyze = async (url: string, useMock: boolean) => {
@@ -34,7 +41,7 @@ const App: React.FC = () => {
     setResult(null);
 
     try {
-      const data = await analyzeRepository(url, apiEndpoint, useMock);
+      const data = await analyzeRepository(url, apiEndpoint, apiKey, useMock);
       setResult(data);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
@@ -106,6 +113,7 @@ const App: React.FC = () => {
         isOpen={isSettingsOpen} 
         onClose={() => setIsSettingsOpen(false)}
         currentUrl={apiEndpoint}
+        currentApiKey={apiKey}
         onSave={handleSaveSettings}
       />
     </div>

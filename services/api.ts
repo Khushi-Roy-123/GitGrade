@@ -1,7 +1,7 @@
 import { AnalysisResult } from '../types';
 import { MOCK_RESULT } from '../constants';
 
-export const analyzeRepository = async (repoUrl: string, apiEndpoint: string, useMock: boolean = false): Promise<AnalysisResult> => {
+export const analyzeRepository = async (repoUrl: string, apiEndpoint: string, apiKey: string, useMock: boolean = false): Promise<AnalysisResult> => {
   if (useMock) {
     return new Promise((resolve) => {
       setTimeout(() => resolve(MOCK_RESULT), 2000); // Slight delay to simulate AI processing
@@ -9,11 +9,17 @@ export const analyzeRepository = async (repoUrl: string, apiEndpoint: string, us
   }
 
   try {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    if (apiKey) {
+      headers['x-api-key'] = apiKey;
+    }
+
     const response = await fetch(apiEndpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({ repo_url: repoUrl }),
     });
 

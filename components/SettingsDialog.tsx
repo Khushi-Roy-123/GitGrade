@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, X, Save } from 'lucide-react';
+import { Settings, X, Save, Key } from 'lucide-react';
 
 interface SettingsDialogProps {
   isOpen: boolean;
   onClose: () => void;
   currentUrl: string;
-  onSave: (url: string) => void;
+  currentApiKey: string;
+  onSave: (url: string, apiKey: string) => void;
 }
 
-export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose, currentUrl, onSave }) => {
+export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose, currentUrl, currentApiKey, onSave }) => {
   const [url, setUrl] = useState(currentUrl);
+  const [apiKey, setApiKey] = useState(currentApiKey);
 
   useEffect(() => {
     setUrl(currentUrl);
-  }, [currentUrl]);
+    setApiKey(currentApiKey);
+  }, [currentUrl, currentApiKey]);
 
   if (!isOpen) return null;
 
@@ -30,7 +33,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose,
           </button>
         </div>
         
-        <form onSubmit={(e) => { e.preventDefault(); onSave(url); onClose(); }} className="p-6">
+        <form onSubmit={(e) => { e.preventDefault(); onSave(url, apiKey); onClose(); }} className="p-6">
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">Backend API Endpoint</label>
             <input
@@ -42,7 +45,24 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose,
               required
             />
             <p className="text-xs text-gray-500 mt-2">
-              Point this to your running FastAPI instance. Ensure the path (e.g., <code>/analyze</code>) is correct.
+              Point this to your running FastAPI instance.
+            </p>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <Key className="w-4 h-4 text-gray-400" />
+              API Key (OpenAI / OpenRouter)
+            </label>
+            <input
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              placeholder="sk-..."
+            />
+            <p className="text-xs text-gray-500 mt-2">
+              This key will be sent to your backend in the <code>x-api-key</code> header.
             </p>
           </div>
           
