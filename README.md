@@ -102,11 +102,3 @@ The frontend will start at `http://localhost:3000` (configured in `vite.config.t
 ├── vite.config.ts          # Vite Configuration
 └── README.md               # Documentation
 ```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please fork the repository and submit a Pull Request.
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
