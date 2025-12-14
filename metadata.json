@@ -1,0 +1,5 @@
+{
+  "name": "GitGrade",
+  "description": "AI-powered GitHub repository analyzer and developer profiling tool.",
+  "requestFramePermissions": []
+}
