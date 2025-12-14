@@ -102,6 +102,3 @@ npx serve .
     └── SettingsDialog.tsx  # Configuration modal
 ```
 
-## 🛡️ License
-
-MIT
