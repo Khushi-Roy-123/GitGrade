@@ -43,7 +43,7 @@ Follow these steps to get GitGrade running locally.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/gitgrade.git
+git clone https://github.com/Khushi-Roy-123/gitgrade.git
 cd gitgrade
 ```
 
