@@ -6,99 +6,107 @@ GitGrade is an intelligent developer tool that analyzes GitHub repositories usin
 
 ## 🚀 Features
 
-- **AI Analysis**: Uses Gemini 2.0 (via OpenRouter) to deeply analyze codebase patterns.
-- **Scoring System**: Generates a 0-100 score with a difficulty level (Beginner to Elite).
-- **Visual Metrics**: Interactive Radar and Radial charts to visualize skill distribution.
-- **Actionable Roadmap**: Generates a step-by-step guide to improve the specific repository.
-- **Mock Mode**: Includes a demo mode to visualize results without spending API credits.
+- **🤖 Deep AI Analysis**: Leverages **Gemini 2.0 Flash** (via OpenRouter) to provide senior-level architectural reviews and strategic recommendations.
+- **📊 Smart Scoring System**: Evaluates repositories on a 0-100 scale across multiple dimensions:
+  - **Code Quality**: Linting, file naming, structure.
+  - **Documentation**: README, Contributing guides, License.
+  - **Best Practices**: CI/CD pipelines, security checks, test coverage.
+- **📈 Visual Metrics**: Interactive Radar and Radial charts to visualize skill distribution at a glance.
+- **🗺️ Actionable Roadmap**: Generates a step-by-step specific plan to take the repository to the next level.
+- **⚡ Real-time Feedback**: Asynchronous backend processing for fast analysis.
 
 ## 🛠️ Tech Stack
 
 **Frontend:**
-- React 19
-- Tailwind CSS (Styling)
-- Recharts (Data Visualization)
-- Lucide React (Icons)
-- ESM Modules (No-build setup)
+- **Framework**: React 19 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **Visualization**: Recharts
+- **Icons**: Lucide React
 
 **Backend:**
-- Python 3.9+
-- FastAPI
-- HTTPX (Async API calls)
-- Pydantic
+- **Framework**: FastAPI (Python 3.9+)
+- **Analysis**: Custom scoring logic + AI Integration
+- **Httpx**: Fully async GitHub API and AI model support
+- **Pydantic**: Robust data validation
 
 ## 📋 Prerequisites
 
-- Python 3.8 or higher
-- An API Key from [OpenRouter](https://openrouter.ai/) (or compatible OpenAI-format provider).
+- **Python 3.9** or higher
+- **Node.js** 18 or higher (for the frontend)
+- An **API Key** from [OpenRouter](https://openrouter.ai/) (Required for the "Deep Analysis" feature).
 
 ## ⚡ Quick Start
 
-### 1. Backend Setup
+Follow these steps to get GitGrade running locally.
 
-The backend handles the communication with the AI provider and processes the repository data.
+### 1. Clone the Repository
 
 ```bash
-# Clone the repository
 git clone https://github.com/yourusername/gitgrade.git
 cd gitgrade
+```
 
+### 2. Backend Setup
+
+The backend communicates with GitHub and the AI provider.
+
+```bash
 # Install Python dependencies
 pip install -r requirements.txt
 
-# Set your API Key (Optional, can also be set via UI)
-export OPENROUTER_API_KEY=your_api_key_here
-
-# Run the server
+# Run the backend server
 uvicorn main:app --reload
 ```
-
 The backend will start at `http://127.0.0.1:8000`.
 
-### 2. Frontend Setup
+### 3. Frontend Setup
 
-The frontend is built using modern ES modules and imports dependencies directly from CDNs, meaning no complex node_modules or build step is strictly required for development.
+The frontend is a modern Vite application.
 
-You simply need to serve the directory to avoid Cross-Origin (CORS) issues associated with the `file://` protocol.
-
-**Option A: Using Python**
 ```bash
-# In the project root directory
-python -m http.server 3000
-```
-Open `http://localhost:3000` in your browser.
+# Install Node dependencies
+npm install
 
-**Option B: Using Node/Serve**
-```bash
-npx serve .
+# Start the development server
+npm run dev
 ```
+The frontend will start at `http://localhost:3000` (configured in `vite.config.ts`).
 
 ## 🎮 Usage
 
-1. **Configure API**: Click the **Settings (Gear Icon)** in the top right corner.
-   - Enter your Backend URL (default: `http://localhost:8000/analyze`).
-   - Enter your **OpenRouter/OpenAI API Key**.
-   - Click Save.
-2. **Analyze**: Paste a public GitHub repository URL (e.g., `https://github.com/facebook/react`) into the input field.
-3. **View Results**: Wait for the AI to generate your report, grade, and roadmap.
+1.  **Open the App**: Navigate to the frontend URL (`http://localhost:3000`).
+2.  **Configure API**: 
+    - Click the **Settings (Gear Icon)** in the top right.
+    - Enter your **OpenRouter API Key**.
+    - Ensure Backend URL is set to `http://localhost:8000/analyze`.
+    - Click **Save**.
+3.  **Analyze**: Paste any public GitHub repository URL (e.g., `https://github.com/fastapi/fastapi`) and hit Analyze.
+4.  **Explore**: View your Grade, Radar Chart, and the detailed **AI Audit Report**.
 
 ## 📁 Project Structure
 
 ```
-├── main.py                 # FastAPI Backend entry point
-├── requirements.txt        # Python dependencies
-├── index.html              # Frontend entry point
-├── index.tsx               # React root
-├── App.tsx                 # Main application component
-├── types.ts                # TypeScript interfaces
-├── constants.ts            # Config and Mock data
-├── services/
-│   └── api.ts              # API communication logic
-└── components/
-    ├── AnalyzerForm.tsx    # Input form
-    ├── ResultCard.tsx      # Main result display
-    ├── ScoreChart.tsx      # Radial score visualization
-    ├── DimensionChart.tsx  # Radar/Bar chart for skills
-    └── SettingsDialog.tsx  # Configuration modal
+├── app/                    # Backend Logic
+│   ├── main.py             # FastAPI App definition
+│   ├── ai_service.py       # OpenRouter/Gemini integration
+│   ├── github_service.py   # GitHub API fetchers
+│   ├── scoring.py          # Grading algorithms
+│   └── utils.py            # Helpers
+├── components/             # React Components
+│   ├── AnalyzerForm.tsx    # Input & Validation
+│   ├── ResultCard.tsx      # Dashboard & Reports
+│   └── ...
+├── main.py                 # Backend Entry Point
+├── package.json            # Frontend Dependencies
+├── vite.config.ts          # Vite Configuration
+└── README.md               # Documentation
 ```
 
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and submit a Pull Request.
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
