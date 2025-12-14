@@ -29,10 +29,11 @@ const App: React.FC = () => {
   }, []);
 
   const handleSaveSettings = (url: string, key: string) => {
+    const trimmedKey = key.trim();
     setApiEndpoint(url);
-    setApiKey(key);
+    setApiKey(trimmedKey);
     localStorage.setItem('gitanalyze_api_endpoint', url);
-    localStorage.setItem('gitanalyze_api_key', key);
+    localStorage.setItem('gitanalyze_api_key', trimmedKey);
   };
 
   const handleAnalyze = async (url: string, useMock: boolean) => {

@@ -9,7 +9,8 @@ export const analyzeRepository = async (repoUrl: string, apiEndpoint: string, ap
   }
 
   try {
-    const headers: HeadersInit = {
+    // Explicitly type headers as Record<string, string> to allow dynamic assignment
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
@@ -24,25 +25,62 @@ export const analyzeRepository = async (repoUrl: string, apiEndpoint: string, ap
     });
 
     if (!response.ok) {
-      let errorMessage = `Analysis failed: ${response.status}`;
+      const errorText = await response.text();
+      let errorJson: any;
       try {
-        const errorData = await response.json();
-        if (errorData.detail) {
-          errorMessage = Array.isArray(errorData.detail) 
-            ? errorData.detail.map((e: any) => e.msg).join(', ') 
-            : errorData.detail;
-        }
-      } catch (e) {
-        const text = await response.text();
-        if (text) errorMessage += ` ${text}`;
+        errorJson = JSON.parse(errorText);
+      } catch {
+        // Response body is not JSON
       }
-      throw new Error(errorMessage);
+
+      const detail = errorJson?.detail;
+      let userMessage = `Analysis failed (${response.status})`;
+
+      // Status-specific handling
+      if (response.status === 401) {
+        userMessage = "Unauthorized: Invalid or missing API Key. Please check your settings.";
+      } else if (response.status === 403) {
+        userMessage = "Forbidden: Access denied. Check your API key permissions.";
+      } else if (response.status === 404) {
+        // If the backend explicitly says repository not found (assuming backend returns that in detail), otherwise endpoint issue
+        if (detail && typeof detail === 'string' && detail.toLowerCase().includes('repository')) {
+           userMessage = "Repository not found. Please ensure the URL is correct and public.";
+        } else {
+           userMessage = "Resource not found (404). Check the API Endpoint URL in settings.";
+        }
+      } else if (response.status === 422) {
+        userMessage = "Invalid Input: ";
+        if (Array.isArray(detail)) {
+            userMessage += detail.map((e: any) => e.msg).join(', ');
+        } else if (typeof detail === 'string') {
+            userMessage += detail;
+        } else {
+            userMessage += "Please check the repository URL format.";
+        }
+      } else if (response.status === 429) {
+        userMessage = "Rate Limit Exceeded: You are making too many requests. Please wait a moment.";
+      } else if (response.status >= 500) {
+        userMessage = "Server Error: The backend encountered an issue.";
+        if (detail) {
+            userMessage += ` Details: ${typeof detail === 'string' ? detail : JSON.stringify(detail)}`;
+        }
+      } else {
+        // Fallback for other errors, prefer detailed message from backend
+        if (detail) {
+             userMessage = typeof detail === 'string' ? detail : JSON.stringify(detail);
+        } else if (errorText) {
+             // Truncate very long HTML error pages if they accidentally leak through
+             userMessage = `Error: ${errorText.substring(0, 150)}${errorText.length > 150 ? '...' : ''}`;
+        }
+      }
+
+      throw new Error(userMessage);
     }
 
     return await response.json();
   } catch (error: any) {
     if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
-      throw new Error(`Could not connect to backend at ${apiEndpoint}. Ensure the server is running.`);
+      throw new Error(`Connection failed. Ensure the backend is running at ${apiEndpoint} and is accessible.`);
     }
     throw error;
   }

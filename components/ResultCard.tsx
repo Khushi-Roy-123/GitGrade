@@ -1,14 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnalysisResult } from '../types';
 import { ScoreChart } from './ScoreChart';
 import { DimensionChart } from './DimensionChart';
-import { BookOpen, Hammer, ArrowRight, GitBranch } from 'lucide-react';
+import { BookOpen, Hammer, GitBranch, Calendar, Check } from 'lucide-react';
 
 interface ResultCardProps {
   data: AnalysisResult;
 }
 
 export const ResultCard: React.FC<ResultCardProps> = ({ data }) => {
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+
+  // Reset completed steps when the repository data changes
+  useEffect(() => {
+    setCompletedSteps(new Set());
+  }, [data.repository_name, data.roadmap]);
+
+  const toggleStep = (index: number) => {
+    setCompletedSteps(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in-up">
       {/* Top Banner */}
@@ -64,7 +83,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({ data }) => {
           </div>
 
           {/* Roadmap Section */}
-          <div>
+          <div className="mb-10">
             <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
               <span className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
                 <Hammer className="w-5 h-5" />
@@ -73,24 +92,108 @@ export const ResultCard: React.FC<ResultCardProps> = ({ data }) => {
             </h3>
             
             <div className="space-y-4">
-              {data.roadmap.map((item, index) => (
-                <div key={index} className="flex group">
-                  <div className="flex flex-col items-center mr-4">
-                    <div className="w-8 h-8 rounded-full border-2 border-purple-200 bg-white flex items-center justify-center text-sm font-bold text-purple-600 group-hover:border-purple-500 group-hover:bg-purple-50 transition-colors">
-                      {index + 1}
+              {data.roadmap.map((item, index) => {
+                const isCompleted = completedSteps.has(index);
+                return (
+                  <div 
+                    key={index} 
+                    onClick={() => toggleStep(index)}
+                    className={`flex group cursor-pointer transition-all duration-500 ${isCompleted ? 'opacity-60 grayscale-[0.5]' : ''}`}
+                  >
+                    <div className="flex flex-col items-center mr-4">
+                      {/* Number Bubble / Checkmark */}
+                      <div className={`
+                        w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-bold transition-all duration-300 z-10
+                        ${isCompleted 
+                          ? 'bg-green-500 border-green-500 text-white scale-90' 
+                          : 'border-purple-200 bg-white text-purple-600 group-hover:border-purple-500 group-hover:bg-purple-50'
+                        }
+                      `}>
+                        {isCompleted ? <Check className="w-4 h-4" /> : index + 1}
+                      </div>
+                      
+                      {/* Connecting Line */}
+                      {index !== data.roadmap.length - 1 && (
+                        <div className={`
+                          w-0.5 h-full my-1 transition-colors duration-300
+                          ${isCompleted ? 'bg-green-200' : 'bg-gray-100 group-hover:bg-purple-100'}
+                        `}></div>
+                      )}
                     </div>
-                    {index !== data.roadmap.length - 1 && (
-                      <div className="w-0.5 h-full bg-gray-100 my-1 group-hover:bg-purple-100 transition-colors"></div>
-                    )}
-                  </div>
-                  <div className="bg-white border border-gray-200 rounded-xl p-4 flex-1 shadow-sm hover:shadow-md hover:border-purple-200 transition-all cursor-default">
-                    <div className="flex items-start justify-between gap-4">
-                      <p className="text-gray-700 font-medium">{item}</p>
-                      <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-purple-400 mt-1" />
+
+                    {/* Content Card */}
+                    <div className={`
+                      bg-white border rounded-xl p-4 flex-1 shadow-sm transition-all duration-300 relative overflow-hidden
+                      ${isCompleted 
+                        ? 'bg-green-50/40 border-green-200 shadow-none' 
+                        : 'border-gray-200 hover:shadow-md hover:border-purple-200'
+                      }
+                    `}>
+                      <div className="flex items-start justify-between gap-4">
+                        <p className={`text-gray-700 font-medium transition-all duration-300 ${isCompleted ? 'line-through text-gray-400' : ''}`}>
+                          {item}
+                        </p>
+                        
+                        {/* Checkbox Indicator */}
+                        <div className={`
+                          w-5 h-5 rounded-md border flex items-center justify-center flex-shrink-0 transition-all duration-300
+                          ${isCompleted 
+                            ? 'bg-green-500 border-green-500' 
+                            : 'border-gray-300 bg-white group-hover:border-purple-300'
+                          }
+                        `}>
+                          <Check className={`w-3.5 h-3.5 text-white transition-opacity ${isCompleted ? 'opacity-100' : 'opacity-0'}`} />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Activity Overview (Placeholder) */}
+          <div className="pt-8 border-t border-gray-100">
+            <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
+                <Calendar className="w-5 h-5" />
+              </span>
+              Activity Overview
+            </h3>
+            
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-4">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    Feature Preview
+                  </span>
+               </div>
+               
+               <p className="text-sm text-gray-500 mb-4">Repository contribution heatmap (Simulated)</p>
+
+               <div className="flex flex-wrap gap-1.5 opacity-90">
+                 {Array.from({ length: 91 }).map((_, i) => (
+                    <div 
+                      key={i} 
+                      className={`w-3.5 h-3.5 rounded-sm transition-all hover:scale-125 ${
+                        Math.random() > 0.85 ? 'bg-green-600' : 
+                        Math.random() > 0.65 ? 'bg-green-400' : 
+                        Math.random() > 0.4 ? 'bg-green-200' : 'bg-gray-100'
+                      }`}
+                      title={`${Math.floor(Math.random() * 10)} contributions`}
+                    />
+                 ))}
+               </div>
+               
+               <div className="mt-4 flex items-center gap-2 text-xs text-gray-400 justify-end">
+                 <span>Less</span>
+                 <div className="flex gap-1">
+                   <div className="w-2.5 h-2.5 bg-gray-100 rounded-sm"></div>
+                   <div className="w-2.5 h-2.5 bg-green-200 rounded-sm"></div>
+                   <div className="w-2.5 h-2.5 bg-green-400 rounded-sm"></div>
+                   <div className="w-2.5 h-2.5 bg-green-600 rounded-sm"></div>
+                 </div>
+                 <span>More</span>
+               </div>
             </div>
           </div>
 

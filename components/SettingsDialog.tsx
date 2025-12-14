@@ -60,6 +60,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose,
               onChange={(e) => setApiKey(e.target.value)}
               className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
               placeholder="sk-..."
+              autoComplete="new-password"
             />
             <p className="text-xs text-gray-500 mt-2">
               This key will be sent to your backend in the <code>x-api-key</code> header.
