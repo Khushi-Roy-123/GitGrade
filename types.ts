@@ -11,6 +11,9 @@ export interface AnalysisResult {
     best_practices: number;
     project_structure?: number;
   };
+  checklist?: { item: string; status: 'pass' | 'fail' }[];
+  tips?: string[];
+  detailed_report?: string;
 }
 
 export interface ApiError {

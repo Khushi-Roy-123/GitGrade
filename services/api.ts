@@ -44,33 +44,33 @@ export const analyzeRepository = async (repoUrl: string, apiEndpoint: string, ap
       } else if (response.status === 404) {
         // If the backend explicitly says repository not found (assuming backend returns that in detail), otherwise endpoint issue
         if (detail && typeof detail === 'string' && detail.toLowerCase().includes('repository')) {
-           userMessage = "Repository not found. Please ensure the URL is correct and public.";
+          userMessage = "Repository not found. Please ensure the URL is correct and public.";
         } else {
-           userMessage = "Resource not found (404). Check the API Endpoint URL in settings.";
+          userMessage = "Resource not found (404). Check the API Endpoint URL in settings.";
         }
       } else if (response.status === 422) {
         userMessage = "Invalid Input: ";
         if (Array.isArray(detail)) {
-            userMessage += detail.map((e: any) => e.msg).join(', ');
+          userMessage += detail.map((e: any) => e.msg).join(', ');
         } else if (typeof detail === 'string') {
-            userMessage += detail;
+          userMessage += detail;
         } else {
-            userMessage += "Please check the repository URL format.";
+          userMessage += "Please check the repository URL format.";
         }
       } else if (response.status === 429) {
         userMessage = "Rate Limit Exceeded: You are making too many requests. Please wait a moment.";
       } else if (response.status >= 500) {
         userMessage = "Server Error: The backend encountered an issue.";
         if (detail) {
-            userMessage += ` Details: ${typeof detail === 'string' ? detail : JSON.stringify(detail)}`;
+          userMessage += ` Details: ${typeof detail === 'string' ? detail : JSON.stringify(detail)}`;
         }
       } else {
         // Fallback for other errors, prefer detailed message from backend
         if (detail) {
-             userMessage = typeof detail === 'string' ? detail : JSON.stringify(detail);
+          userMessage = typeof detail === 'string' ? detail : JSON.stringify(detail);
         } else if (errorText) {
-             // Truncate very long HTML error pages if they accidentally leak through
-             userMessage = `Error: ${errorText.substring(0, 150)}${errorText.length > 150 ? '...' : ''}`;
+          // Truncate very long HTML error pages if they accidentally leak through
+          userMessage = `Error: ${errorText.substring(0, 150)}${errorText.length > 150 ? '...' : ''}`;
         }
       }
 

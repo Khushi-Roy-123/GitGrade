@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Settings State
   const [apiEndpoint, setApiEndpoint] = useState(DEFAULT_API_ENDPOINT);
   const [apiKey, setApiKey] = useState('');
@@ -54,11 +54,11 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 text-slate-800 font-sans">
       <div className="max-w-5xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        
+
         {/* Header Section */}
         <div className="relative text-center mb-16">
           <div className="absolute right-0 top-0">
-            <button 
+            <button
               onClick={() => setIsSettingsOpen(true)}
               className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-all"
               title="Configure Backend"
@@ -110,8 +110,8 @@ const App: React.FC = () => {
         )}
       </div>
 
-      <SettingsDialog 
-        isOpen={isSettingsOpen} 
+      <SettingsDialog
+        isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         currentUrl={apiEndpoint}
         currentApiKey={apiKey}

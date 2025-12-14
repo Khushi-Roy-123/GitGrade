@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AnalysisResult } from '../types';
 import { ScoreChart } from './ScoreChart';
 import { DimensionChart } from './DimensionChart';
-import { BookOpen, Hammer, GitBranch, Calendar, Check } from 'lucide-react';
+import { BookOpen, Hammer, GitBranch, Check } from 'lucide-react';
 
 interface ResultCardProps {
   data: AnalysisResult;
@@ -47,7 +47,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({ data }) => {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-0 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
-        
+
         {/* Column 1: Score & Metrics */}
         <div className="p-8 lg:col-span-1 bg-gray-50/50 flex flex-col">
           <div className="mb-8">
@@ -58,17 +58,17 @@ export const ResultCard: React.FC<ResultCardProps> = ({ data }) => {
           <div className="flex-1 flex flex-col">
             <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 text-center">Dimension Profile</h4>
             <div className="flex-1 flex items-center justify-center">
-                {/* Safe check for breakdown */}
-                {data.breakdown && (
+              {/* Safe check for breakdown */}
+              {data.breakdown && (
                 <DimensionChart data={data.breakdown} />
-                )}
+              )}
             </div>
           </div>
         </div>
 
         {/* Column 2 & 3: Summary & Roadmap */}
         <div className="lg:col-span-2 p-8">
-          
+
           {/* Summary Section */}
           <div className="mb-10">
             <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -90,13 +90,13 @@ export const ResultCard: React.FC<ResultCardProps> = ({ data }) => {
               </span>
               Personalized Roadmap
             </h3>
-            
+
             <div className="space-y-4">
               {data.roadmap.map((item, index) => {
                 const isCompleted = completedSteps.has(index);
                 return (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     onClick={() => toggleStep(index)}
                     className={`flex group cursor-pointer transition-all duration-500 ${isCompleted ? 'opacity-60 grayscale-[0.5]' : ''}`}
                   >
@@ -104,14 +104,14 @@ export const ResultCard: React.FC<ResultCardProps> = ({ data }) => {
                       {/* Number Bubble / Checkmark */}
                       <div className={`
                         w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-bold transition-all duration-300 z-10
-                        ${isCompleted 
-                          ? 'bg-green-500 border-green-500 text-white scale-90' 
+                        ${isCompleted
+                          ? 'bg-green-500 border-green-500 text-white scale-90'
                           : 'border-purple-200 bg-white text-purple-600 group-hover:border-purple-500 group-hover:bg-purple-50'
                         }
                       `}>
                         {isCompleted ? <Check className="w-4 h-4" /> : index + 1}
                       </div>
-                      
+
                       {/* Connecting Line */}
                       {index !== data.roadmap.length - 1 && (
                         <div className={`
@@ -124,8 +124,8 @@ export const ResultCard: React.FC<ResultCardProps> = ({ data }) => {
                     {/* Content Card */}
                     <div className={`
                       bg-white border rounded-xl p-4 flex-1 shadow-sm transition-all duration-300 relative overflow-hidden
-                      ${isCompleted 
-                        ? 'bg-green-50/40 border-green-200 shadow-none' 
+                      ${isCompleted
+                        ? 'bg-green-50/40 border-green-200 shadow-none'
                         : 'border-gray-200 hover:shadow-md hover:border-purple-200'
                       }
                     `}>
@@ -133,12 +133,12 @@ export const ResultCard: React.FC<ResultCardProps> = ({ data }) => {
                         <p className={`text-gray-700 font-medium transition-all duration-300 ${isCompleted ? 'line-through text-gray-400' : ''}`}>
                           {item}
                         </p>
-                        
+
                         {/* Checkbox Indicator */}
                         <div className={`
                           w-5 h-5 rounded-md border flex items-center justify-center flex-shrink-0 transition-all duration-300
-                          ${isCompleted 
-                            ? 'bg-green-500 border-green-500' 
+                          ${isCompleted
+                            ? 'bg-green-500 border-green-500'
                             : 'border-gray-300 bg-white group-hover:border-purple-300'
                           }
                         `}>
@@ -152,50 +152,62 @@ export const ResultCard: React.FC<ResultCardProps> = ({ data }) => {
             </div>
           </div>
 
-          {/* Activity Overview (Placeholder) */}
-          <div className="pt-8 border-t border-gray-100">
-            <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
-                <Calendar className="w-5 h-5" />
-              </span>
-              Activity Overview
-            </h3>
-            
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-4">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                    Feature Preview
-                  </span>
-               </div>
-               
-               <p className="text-sm text-gray-500 mb-4">Repository contribution heatmap (Simulated)</p>
-
-               <div className="flex flex-wrap gap-1.5 opacity-90">
-                 {Array.from({ length: 91 }).map((_, i) => (
-                    <div 
-                      key={i} 
-                      className={`w-3.5 h-3.5 rounded-sm transition-all hover:scale-125 ${
-                        Math.random() > 0.85 ? 'bg-green-600' : 
-                        Math.random() > 0.65 ? 'bg-green-400' : 
-                        Math.random() > 0.4 ? 'bg-green-200' : 'bg-gray-100'
-                      }`}
-                      title={`${Math.floor(Math.random() * 10)} contributions`}
-                    />
-                 ))}
-               </div>
-               
-               <div className="mt-4 flex items-center gap-2 text-xs text-gray-400 justify-end">
-                 <span>Less</span>
-                 <div className="flex gap-1">
-                   <div className="w-2.5 h-2.5 bg-gray-100 rounded-sm"></div>
-                   <div className="w-2.5 h-2.5 bg-green-200 rounded-sm"></div>
-                   <div className="w-2.5 h-2.5 bg-green-400 rounded-sm"></div>
-                   <div className="w-2.5 h-2.5 bg-green-600 rounded-sm"></div>
-                 </div>
-                 <span>More</span>
-               </div>
+          {/* Project Health Checklist */}
+          {data.checklist && (
+            <div className="mb-10">
+              <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span className="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center text-teal-600">
+                  <Check className="w-5 h-5" />
+                </span>
+                Project Health Checklist
+              </h3>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {data.checklist.map((item, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <span className="font-medium text-gray-700">{item.item}</span>
+                    <span className={`px-2 py-1 rounded-md text-xs font-bold uppercase ${item.status === 'pass' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      {item.status === 'pass' ? 'PASS' : 'FAIL'}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* How to Improve (Expert Tips) */}
+          {data.tips && data.tips.length > 0 && (
+            <div className="pt-8 border-t border-gray-100">
+              <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
+                  <BookOpen className="w-5 h-5" />
+                </span>
+                Expert Improvement Tips
+              </h3>
+              <ul className="space-y-3">
+                {data.tips.map((tip, idx) => (
+                  <li key={idx} className="flex items-start gap-3 p-3 bg-amber-50 border border-amber-100 rounded-lg text-amber-900 text-sm">
+                    <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Deep AI Analysis (Full Report) */}
+          {data.detailed_report && (
+            <div className="pt-8 border-t border-gray-100">
+              <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
+                  <BookOpen className="w-5 h-5" />
+                </span>
+                Deep AI Analysis
+              </h3>
+              <div className="bg-indigo-50/50 border border-indigo-100 rounded-xl p-6 text-gray-800 leading-relaxed font-medium text-sm whitespace-pre-wrap font-mono">
+                {data.detailed_report}
+              </div>
+            </div>
+          )}
 
         </div>
       </div>

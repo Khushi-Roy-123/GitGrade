@@ -34,8 +34,18 @@ class RepoRequest(BaseModel):
     repo_url: str
 
 
+from fastapi import FastAPI, HTTPException, Header
+from fastapi.responses import FileResponse
+from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+
+# ... imports ...
+
 @app.post("/analyze")
-def analyze_repo(data: RepoRequest):
+async def analyze_repo(
+    data: RepoRequest, 
+    x_api_key: str = Header(None, alias="x-api-key")
+):
     try:
         # Parse URL
         owner, repo = parse_github_url(data.repo_url)
@@ -49,13 +59,14 @@ def analyze_repo(data: RepoRequest):
         default_branch = repo_metadata.get("default_branch", "main")
         tree = get_repo_tree(owner, repo, default_branch)
 
-        # Analyze & score
-        result = analyze_repository(
+        # Analyze & score (Now Async & accepts API Key)
+        result = await analyze_repository(
             repo=repo_metadata,
             tree=tree,
             commits=commits,
             branches=branches,
             languages=languages,
+            api_key=x_api_key  # Pass key from header
         )
 
         return {
@@ -63,6 +74,9 @@ def analyze_repo(data: RepoRequest):
             "score": result["score"],
             "summary": result["summary"],
             "roadmap": result["roadmap"],
+            "checklist": result.get("checklist"),
+            "tips": result.get("tips"),
+            "detailed_report": result.get("detailed_report")
         }
 
     except ValueError as e:
